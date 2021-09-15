@@ -2,10 +2,12 @@ name: Publish
 
 on:
   workflow_dispatch: # Allow manual runs.
+  push:
+    branches: [ 'java17_file' ]
 
 jobs:
   ci:
-    name: Publish Java 17
+    name: Publish
     runs-on: ubuntu-latest
 
     steps:
@@ -20,9 +22,7 @@ jobs:
     - name: Build, Test and Publish
       run: |
         set -ex
-        
         echo "${{ secrets.DOCKER_PASS }}" | docker login -u "${{ secrets.DOCKER_USER }}" --password-stdin
-
         bazel build --curses=no //package_manager:dpkg_parser.par
         bazel build --curses=no //java:java17_root_debian11
         bazel build --curses=no //java:java17_nonroot_debian11
