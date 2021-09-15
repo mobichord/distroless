@@ -24,6 +24,9 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
     - name: Build, Test and Publish
+      env:
+        REGISTRY: docker.io
+        PROJECT_ID: mobichord
       run: |
         set -ex
         bazel build --curses=no //package_manager:dpkg_parser.par
