@@ -8,4 +8,6 @@ def jre_ver(version):
         return version.split("-")[0]
     if version.startswith("11."):
         return version.split("+")[0]
+    if version.startswith("15."):
+        return version.split("+")[0]
     fail("unrecognized openjdk package version: " + version)
