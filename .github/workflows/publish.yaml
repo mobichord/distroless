@@ -1,7 +1,6 @@
 name: Publish
 
-on:
-  workflow_dispatch: # Allow manual runs.
+on: workflow_dispatch
 
 jobs:
   ci:
