@@ -388,3 +388,10 @@ http_archive(
 load("@rules_rust//rust:repositories.bzl", "rust_repositories")
 
 rust_repositories()
+
+# JKDs
+load("//jdk:jdk.bzl", "jdk_repository")
+
+jdk_repository(urls=[
+    "https://download.java.net/java/GA/jdk17/0d483333a00540d886896bac774ff48b/35/GPL/openjdk-17_linux-x64_bin.tar.gz",
+])

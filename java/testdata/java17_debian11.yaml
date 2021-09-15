@@ -3,7 +3,7 @@ commandTests:
   - name: java
     command: "/usr/lib/jvm/java-17-openjdk-amd64/bin/java"
     args: ["-version"]
-    expectedError: ['openjdk version "18"']
+    expectedError: ['openjdk version "17"']
   - name: java-symlink
     command: "/usr/bin/java"
     args: ["-version"]
@@ -18,9 +18,9 @@ fileExistenceTests:
   - name: no-shell
     path: "/bin/sh"
     shouldExist: false
-  - name: no-javac
-    path: "/usr/lib/jvm/java-18-openjdk-amd64/bin/javac"
-    shouldExist: false
+  # - name: no-javac
+  #   path: "/usr/lib/jvm/java-17-openjdk-amd64/bin/javac"
+  #   shouldExist: false
 metadataTest:
   env:
     - key: 'JAVA_VERSION'

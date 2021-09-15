@@ -6,6 +6,7 @@ load("@io_bazel_rules_docker//contrib:test.bzl", "container_test")
 load("@io_bazel_rules_docker//java:image.bzl", "java_image")
 load("@package_bundle_amd64_debian10//file:packages.bzl", versions_amd64_debian10 = "versions")
 load("@package_bundle_amd64_debian11//file:packages.bzl", versions_amd64_debian11 = "versions")
+load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar")
 load("//cacerts:java.bzl", "cacerts_java")
 load("//java:jre_ver.bzl", "jre_ver")
 
@@ -25,6 +26,13 @@ USERS = [
     "root",
     "nonroot",
 ]
+
+pkg_tar(
+    name = "openjdk17_layer",
+    package_dir = "/",
+    deps = ["@jdks//:openjdk-17_linux-x64_bin.tar.gz"],
+    symlinks = { "/usr/lib/jvm/java-17-openjdk-amd64": "/jdk-17" }
+)
 
 [
     container_image(
@@ -82,12 +90,6 @@ USERS = [
             "/usr/lib/jvm/java-11-openjdk-amd64/bin/java",
         ),
         (
-            "_debian11",
-            "java17",
-            ["openjdk-17-jre-headless"],
-            "/usr/lib/jvm/java-17-openjdk-amd64/bin/java",
-        ),
-        (
             "_debian10",
             "java11_debug",
             [
@@ -96,13 +98,38 @@ USERS = [
             ],
             "/usr/lib/jvm/java-11-openjdk-amd64/bin/java",
         ),
+    ]
+    for user in USERS
+]
+
+[
+    container_image(
+        name = rule_name + "_" + user + distro_suffix,
+        base = ":java_base" + ("_debug" if ("debug" in rule_name) else "") + "_" + user + distro_suffix,
+        debs = [DISTRO_PACKAGES["amd64"][distro_suffix][deb] for deb in java_debs],
+        # We expect users to use:
+        # cmd = ["/path/to/deploy.jar", "--option1", ...]
+        entrypoint = [
+            "/usr/bin/java",
+            "-jar",
+        ],
+        env = {"JAVA_VERSION": "17"},
+        symlinks = {"/usr/bin/java": java_executable_path},
+        tars = [
+            ":openjdk17_layer",
+        ]
+    )
+    for (distro_suffix, rule_name, java_debs, java_executable_path) in [
+        (
+            "_debian11",
+            "java17",
+            [],
+            "/usr/lib/jvm/java-17-openjdk-amd64/bin/java",
+        ),
         (
             "_debian11",
             "java17_debug",
-            [
-                "openjdk-17-jre-headless",
-                "openjdk-17-jdk-headless",
-            ],
+            [],
             "/usr/lib/jvm/java-17-openjdk-amd64/bin/java",
         ),
     ]
@@ -206,3 +233,27 @@ RULE_NAMES = [
     )
     for rule_name in RULE_NAMES
 ]
+
+JAVA_IMAGES = {
+    "{REGISTRY}/{PROJECT_ID}/distroless:java17-root": "//java:java17_root_debian11",
+    "{REGISTRY}/{PROJECT_ID}/distroless:java17-nonroot": "//java:java17_nonroot_debian11",
+}
+
+load("@io_bazel_rules_docker//container:container.bzl", "container_bundle")
+
+container_bundle(
+    name = "java_image_bundle",
+    images = JAVA_IMAGES,
+)
+
+load("@io_bazel_rules_docker//contrib:push-all.bzl", "container_push")
+
+container_push(
+    name = "publish",
+    bundle = ":java_image_bundle",
+    format = "Docker",
+    # Push images sequentially, to avoid a bug in rules_docker related to
+    # pushing many images in parallel.
+    # https://github.com/bazelbuild/rules_docker/issues/525
+    sequential = True,
+)
