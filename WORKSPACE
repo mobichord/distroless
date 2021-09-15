@@ -161,6 +161,8 @@ load(
             "libuuid1",
             "openjdk-11-jre-headless",
             "openjdk-11-jdk-headless",
+            "openjdk-15-jre-headless",
+            "openjdk-15-jdk-headless",
             "libc-bin",
             "libgraphite2-3",
             "libharfbuzz0b",

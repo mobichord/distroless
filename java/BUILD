@@ -5,13 +5,11 @@ load("@io_bazel_rules_docker//container:container.bzl", "container_image")
 load("@io_bazel_rules_docker//contrib:test.bzl", "container_test")
 load("@io_bazel_rules_docker//java:image.bzl", "java_image")
 load("@package_bundle_amd64_debian10//file:packages.bzl", versions_amd64_debian10 = "versions")
-load("@package_bundle_amd64_debian11//file:packages.bzl", versions_amd64_debian11 = "versions")
 load("//cacerts:java.bzl", "cacerts_java")
 load("//java:jre_ver.bzl", "jre_ver")
 
 DISTRO_VERSIONS = {
     "_debian10": versions_amd64_debian10,
-    "_debian11": versions_amd64_debian11,
 }
 
 USERS = [
@@ -69,13 +67,13 @@ USERS = [
     )
     for (distro_suffix, rule_name, java_debs, java_executable_path) in [
         (
-            "_debian11",
+            "_debian10",
             "java15",
             ["openjdk-15-jre-headless"],
             "/usr/lib/jvm/java-15-openjdk-amd64/bin/java",
         ),
         (
-            "_debian11",
+            "_debian10",
             "java15_debug",
             [
                 "openjdk-15-jre-headless",
@@ -134,8 +132,8 @@ USERS = [
 ]
 
 RULE_NAMES = [
-    "java15_root_debian11",
-    "java15_nonroot_debian11",
+    "java15_root_debian10",
+    "java15_nonroot_debian10",
 ]
 
 [
