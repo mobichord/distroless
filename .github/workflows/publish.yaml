@@ -1,9 +1,11 @@
 name: Publish
 
 on:
-  workflow_dispatch: # Manual run
+  workflow_dispatch: # Allow manual runs.
+  pull_request:
+    branches: [ '_________' ]
   push:
-    branches: [ '___%%%___' ]
+    branches: [ '_________' ]
 
 jobs:
   ci:
