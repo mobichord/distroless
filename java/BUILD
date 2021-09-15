@@ -5,11 +5,20 @@ load("@io_bazel_rules_docker//container:container.bzl", "container_image")
 load("@io_bazel_rules_docker//contrib:test.bzl", "container_test")
 load("@io_bazel_rules_docker//java:image.bzl", "java_image")
 load("@package_bundle_amd64_debian10//file:packages.bzl", versions_amd64_debian10 = "versions")
+load("@package_bundle_amd64_debian11//file:packages.bzl", versions_amd64_debian11 = "versions")
 load("//cacerts:java.bzl", "cacerts_java")
 load("//java:jre_ver.bzl", "jre_ver")
 
+DISTRO_SUFFIXES = DISTRO_SUFFIXES if "_debian11" in DISTRO_SUFFIXES else DISTRO_SUFFIXES + ["_debian11"]
+
 DISTRO_VERSIONS = {
     "_debian10": versions_amd64_debian10,
+    "_debian11": versions_amd64_debian11,
+}
+
+JAVA_DISTROS = {
+    "java11": "_debian10",
+    "java17": "_debian11",
 }
 
 USERS = [
@@ -73,6 +82,12 @@ USERS = [
             "/usr/lib/jvm/java-11-openjdk-amd64/bin/java",
         ),
         (
+            "_debian11",
+            "java17",
+            ["openjdk-17-jre-headless"],
+            "/usr/lib/jvm/java-17-openjdk-amd64/bin/java",
+        ),
+        (
             "_debian10",
             "java11_debug",
             [
@@ -80,6 +95,15 @@ USERS = [
                 "openjdk-11-jdk-headless",
             ],
             "/usr/lib/jvm/java-11-openjdk-amd64/bin/java",
+        ),
+        (
+            "_debian11",
+            "java17_debug",
+            [
+                "openjdk-17-jre-headless",
+                "openjdk-17-jdk-headless",
+            ],
+            "/usr/lib/jvm/java-17-openjdk-amd64/bin/java",
         ),
     ]
     for user in USERS
@@ -105,35 +129,36 @@ USERS = [
 
 [
     container_test(
-        name = "java11_" + user + distro_suffix + "_test",
-        configs = ["testdata/java11" + distro_suffix + ".yaml"],
-        image = ":java11_" + user + distro_suffix,
+        name = java_version + "_" + user + distro_suffix + "_test",
+        configs = ["testdata/" + java_version + distro_suffix + ".yaml"],
+        image = ":" + java_version + "_" + user + distro_suffix,
         tags = [
             "amd64",
             "manual",
         ],
     )
     for user in USERS
-    for distro_suffix in DISTRO_SUFFIXES
+    for java_version, distro_suffix in JAVA_DISTROS.items()
 ]
 
 [
     container_test(
-        name = "java11_debug_" + user + distro_suffix + "_test",
-        configs = ["testdata/java11_debug" + distro_suffix + ".yaml"],
-        image = ":java11_debug_" + user + distro_suffix,
+        name = java_version + "_debug_" + user + distro_suffix + "_test",
+        configs = ["testdata/" + java_version + "_debug" + distro_suffix + ".yaml"],
+        image = ":" + java_version + "_debug_" + user + distro_suffix,
         tags = [
             "amd64",
             "manual",
         ],
     )
     for user in USERS
-    for distro_suffix in DISTRO_SUFFIXES
+    for java_version, distro_suffix in JAVA_DISTROS.items()
 ]
 
 RULE_NAMES = [
-    "java11_root_debian10",
-    "java11_nonroot_debian10",
+    java_version + "_" + user + distro_suffix
+    for user in USERS
+    for java_version, distro_suffix in JAVA_DISTROS.items()
 ]
 
 [

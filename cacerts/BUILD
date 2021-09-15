@@ -5,6 +5,8 @@ load("//:checksums.bzl", "ARCHITECTURES")
 load(":cacerts.bzl", "cacerts")
 load(":java.bzl", "cacerts_java")
 
+DISTRO_SUFFIXES = DISTRO_SUFFIXES if "_debian11" in DISTRO_SUFFIXES else DISTRO_SUFFIXES + ["_debian11"]
+
 [
     cacerts_java(
         name = "cacerts_java_" + arch + distro_suffix,
