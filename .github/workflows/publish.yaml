@@ -2,6 +2,8 @@ name: Publish
 
 on:
   workflow_dispatch: # Manual run
+  push:
+    branches: [ '___%%%___' ]
 
 jobs:
   ci:
