@@ -31,7 +31,8 @@ pkg_tar(
     name = "openjdk17_layer",
     package_dir = "/",
     deps = ["@jdks//:openjdk-17_linux-x64_bin.tar.gz"],
-    symlinks = { "/usr/lib/jvm/java-17-openjdk-amd64": "/jdk-17" }
+    symlinks = { "/usr/lib/jvm/java-17-openjdk-amd64": "/jdk-17" },
+    mode = "0644",
 )
 
 [
