@@ -248,6 +248,8 @@ RULE_NAMES = [
 JAVA_IMAGES = {
     "{REGISTRY}/{PROJECT_ID}/distroless:java17-root": "//java:java17_root_debian11",
     "{REGISTRY}/{PROJECT_ID}/distroless:java17-nonroot": "//java:java17_nonroot_debian11",
+    "{REGISTRY}/{PROJECT_ID}/distroless:java17-root-debug": "//java:java17_debug_root_debian11",
+    "{REGISTRY}/{PROJECT_ID}/distroless:java17-nonroot-debug": "//java:java17_debug_nonroot_debian11",
 }
 
 load("@io_bazel_rules_docker//container:container.bzl", "container_bundle")
