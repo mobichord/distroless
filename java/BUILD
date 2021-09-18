@@ -125,21 +125,23 @@ pkg_tar(
         env = {"JAVA_VERSION": "17"},
         symlinks = {"/usr/bin/java": java_executable_path},
         tars = [
-            ":openjdk17_layer",
+            java_layer,
         ]
     )
-    for (distro_suffix, rule_name, java_debs, java_executable_path) in [
+    for (distro_suffix, rule_name, java_layer, java_debs, java_executable_path) in [
         (
             "_debian11",
             "java17",
+            ":java17_jre_layer",
             [],
-            "/usr/lib/jvm/java-17-openjdk-amd64/bin/java",
+            "/usr/lib/jvm/bin/java",
         ),
         (
             "_debian11",
             "java17_debug",
+            ":java17_jdk_layer",
             [],
-            "/usr/lib/jvm/java-17-openjdk-amd64/bin/java",
+            "/usr/lib/jvm/bin/java",
         ),
     ]
     for user in USERS
