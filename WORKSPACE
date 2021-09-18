@@ -393,5 +393,6 @@ rust_repositories()
 load("//jdk:jdk.bzl", "jdk_repository")
 
 jdk_repository(urls=[
-    "https://download.java.net/java/GA/jdk17/0d483333a00540d886896bac774ff48b/35/GPL/openjdk-17_linux-x64_bin.tar.gz",
+    "https://cdn.azul.com/zulu/bin/zulu17.28.13-ca-jre17.0.0-linux_x64.tar.gz",
+    "https://cdn.azul.com/zulu/bin/zulu17.28.13-ca-jdk17.0.0-linux_x64.tar.gz",
 ])

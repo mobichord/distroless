@@ -28,10 +28,18 @@ USERS = [
 ]
 
 pkg_tar(
-    name = "openjdk17_layer",
-    package_dir = "/",
-    deps = ["@jdks//:openjdk-17_linux-x64_bin.tar.gz"],
-    symlinks = { "/usr/lib/jvm/java-17-openjdk-amd64": "/jdk-17" },
+    name = "java17_jre_layer",
+    package_dir = "/usr/lib/jvm/",
+    deps = ["@jdks//:zulu17.28.13-ca-jre17.0.0-linux_x64.tar.gz"],
+    #symlinks = { "/usr/lib/jvm/java-17-openjdk-amd64": "/jdk-17" },
+    mode = "0644",
+)
+
+pkg_tar(
+    name = "java17_jdk_layer",
+    package_dir = "/usr/lib/jvm/",
+    deps = ["@jdks//:zulu17.28.13-ca-jdk17.0.0-linux_x64.tar.gz"],
+    #symlinks = { "/usr/lib/jvm/java-17-openjdk-amd64": "/jdk-17" },
     mode = "0644",
 )
 

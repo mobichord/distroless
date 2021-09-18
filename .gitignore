@@ -15,3 +15,4 @@
 /bazel-*
 # Ignore outputs generated during Bazel bootstrapping.
 /output/
+/docker
